@@ -1,0 +1,145 @@
+.container {
+  min-height: 100vh;
+  background: #f8f8f8;
+  padding-bottom: 20rpx;
+}
+
+/* 分类导航 */
+.categories {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: #fff;
+  white-space: nowrap;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #eee;
+}
+
+.category-item {
+  display: inline-block;
+  padding: 12rpx 30rpx;
+  margin: 0 16rpx;
+  font-size: 28rpx;
+  color: #666;
+  border-radius: 32rpx;
+  transition: all 0.3s;
+}
+
+.category-item.active {
+  color: #fff;
+  background: #ff2442;
+}
+
+/* 商品列表 */
+.products-grid {
+  padding: 20rpx;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20rpx;
+}
+
+.product-item {
+  background: #fff;
+  border-radius: 12rpx;
+  overflow: hidden;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+}
+
+.product-image {
+  width: 100%;
+  height: 360rpx;
+}
+
+.product-info {
+  padding: 16rpx;
+}
+
+.product-name {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 500;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.product-desc {
+  font-size: 24rpx;
+  color: #999;
+  margin: 8rpx 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.price-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-top: 12rpx;
+}
+
+.price-box {
+  display: flex;
+  align-items: baseline;
+}
+
+.price-symbol {
+  font-size: 24rpx;
+  color: #ff2442;
+}
+
+.price {
+  font-size: 32rpx;
+  color: #ff2442;
+  font-weight: 600;
+  margin-right: 8rpx;
+}
+
+.original-price {
+  font-size: 24rpx;
+  color: #999;
+  text-decoration: line-through;
+}
+
+.sales {
+  font-size: 22rpx;
+  color: #999;
+}
+
+/* 加载更多 */
+.loading-more {
+  text-align: center;
+  padding: 20rpx 0;
+  color: #999;
+  font-size: 24rpx;
+  grid-column: span 2;
+}
+
+.loading-more.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* 空状态 */
+.empty-state {
+  grid-column: span 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 100rpx 0;
+}
+
+.empty-icon {
+  width: 200rpx;
+  height: 200rpx;
+  margin-bottom: 20rpx;
+}
+
+.empty-state text {
+  font-size: 28rpx;
+  color: #999;
+} 

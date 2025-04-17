@@ -1,0 +1,15 @@
+{
+    "setting": {
+        "urlCheck": true,
+        "es6": true,
+        "postcss": true,
+        "minified": true,
+        "newFeature": true,
+        "autoCompile": true,
+        "compileHotReLoad": true,
+        "nativeCompile": true
+    },
+    "appid": "tt8d09fbb41202d4a201",
+    "projectname": "小红书类app开发",
+    "douyinProjectType": "native"
+}

@@ -1,0 +1,71 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/explore/explore",
+    "pages/shop-window/shop-window",
+    "pages/publish/publish",
+    "pages/message/message",
+    "pages/profile/profile",
+    "pages/post-detail/post-detail",
+    "pages/fans/fans",
+    "pages/product-detail/product-detail",
+    "pages/order-list/order-list",
+    "pages/category/category",
+    "pages/custom-login/login/login"
+  ],
+
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "小红书",
+    "navigationBarTextStyle": "black"
+  },
+  "tabBar": {
+    "color": "#999999",
+    "selectedColor": "#FF2442",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页",
+        "iconPath": "./assets/tabbar/home.png",
+        "selectedIconPath": "./assets/tabbar/home-active.png"
+      },
+      {
+        "pagePath": "pages/explore/explore",
+        "text": "发现",
+        "iconPath": "./assets/tabbar/explore.png",
+        "selectedIconPath": "./assets/tabbar/explore-active.png"
+      },
+      {
+        "pagePath": "pages/shop-window/shop-window",
+        "text": "好物",
+        "iconPath": "./assets/tabbar/shop.png",
+        "selectedIconPath": "./assets/tabbar/shop-active.png"
+      },
+      {
+        "pagePath": "pages/message/message",
+        "text": "消息",
+        "iconPath": "./assets/tabbar/message.png",
+        "selectedIconPath": "./assets/tabbar/message-active.png"
+      },
+      {
+        "pagePath": "pages/profile/profile",
+        "text": "我",
+        "iconPath": "./assets/tabbar/profile.png",
+        "selectedIconPath": "./assets/tabbar/profile-active.png"
+      }
+    ]
+  },
+  "permission": {
+    "scope.userLocation": {
+      "desc": "你的位置信息将用于小程序位置接口的效果展示"
+    }
+  },
+  "requiredPrivateInfos": [
+    "getLocation",
+    "chooseLocation"
+  ],
+  "usingComponents": {}
+}

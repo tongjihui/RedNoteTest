@@ -1,0 +1,235 @@
+<view class="container">
+  <!-- 笔记内容 -->
+  <view class="post-content">
+    <!-- 媒体展示区 -->
+    <swiper 
+      class="media-swiper" 
+      indicator-dots="{{post.mediaList.length > 1}}"
+      indicator-active-color="#FF2442"
+      current="{{currentMediaIndex}}"
+      bindchange="onSwiperChange"
+      circular="{{true}}"
+    >
+      <swiper-item tt:for="{{post.mediaList}}" tt:key="index">
+        <image 
+          tt:if="{{item.type === 'image'}}"
+          class="media-item {{item.loading ? 'loading' : ''}}" 
+          src="{{item.url}}" 
+          mode="aspectFill"
+          bindtap="previewImage"
+          data-index="{{index}}"
+          binderror="onMediaLoadError"
+          bindload="onMediaLoad"
+        />
+        <video 
+          tt:if="{{item.type === 'video'}}"
+          class="media-item"
+          src="{{item.url}}"
+          object-fit="cover"
+          show-center-play-btn="{{true}}"
+          controls="{{true}}"
+          bindplay="onVideoPlay"
+          binderror="onMediaLoadError"
+          show-progress="{{true}}"
+          enable-play-gesture="{{true}}"
+        />
+      </swiper-item>
+    </swiper>
+
+    <!-- 作者信息 -->
+    <view class="author-info">
+      <view class="author-left" bindtap="goToUser" data-id="{{post.user.id}}">
+        <image class="avatar" src="{{post.user.avatar}}" />
+        <view class="author-detail">
+          <text class="nickname">{{post.user.nickname}}</text>
+          <text class="time">{{post.createTime}}</text>
+        </view>
+      </view>
+      <view 
+        class="follow-btn {{isFollowing ? 'following' : ''}}" 
+        bindtap="toggleFollow"
+        tt:if="{{!isCurrentUser}}"
+      >
+        {{isFollowing ? '已关注' : '关注'}}
+      </view>
+    </view>
+
+    <!-- 笔记标题和内容 -->
+    <view class="post-detail">
+      <text class="title">{{post.title}}</text>
+      <text class="content">{{post.content}}</text>
+    </view>
+
+    <!-- 话题和位置 -->
+    <view class="post-meta">
+      <view class="topic-list" tt:if="{{post.topics.length > 0}}">
+        <view 
+          class="topic-item" 
+          tt:for="{{post.topics}}" 
+          tt:key="id"
+          bindtap="goToTopic"
+          data-id="{{item.id}}"
+        >
+          #{{item.name}}
+        </view>
+      </view>
+      <view 
+        class="location" 
+        tt:if="{{post.location}}"
+        bindtap="goToLocation"
+      >
+        <image src="../../assets/icons/location.png" />
+        <text>{{post.location.name}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 互动数据 -->
+  <view class="interaction-bar">
+    <view class="interaction-left">
+      <view class="interaction-item">
+        <image src="../../assets/icons/view.png" />
+        <text>{{post.viewCount}}</text>
+      </view>
+      <view class="divider"></view>
+      <view class="interaction-item">
+        <image src="../../assets/icons/collect.png" />
+        <text>收藏</text>
+      </view>
+      <view class="divider"></view>
+      <view class="interaction-item">
+        <image src="../../assets/icons/share.png" />
+        <text>分享</text>
+      </view>
+    </view>
+    <view class="interaction-right">
+      <button class="share-btn" open-type="share">
+        <image src="../../assets/icons/share.png" />
+      </button>
+    </view>
+  </view>
+
+  <!-- 评论区 -->
+  <view class="comments-section">
+    <view class="comments-header">
+      <text class="comments-title">评论 {{post.commentCount || 0}}</text>
+      <view class="sort-toggle {{commentSortType === 'time' ? 'desc' : ''}}" bind:tap="toggleCommentSort">
+        <text>{{commentSortType === 'hot' ? '最热' : '最新'}}</text>
+        <image class="sort-icon" src="/assets/icons/sort.png" />
+      </view>
+    </view>
+
+    <view class="comments-list">
+      <block tt:if="{{comments.length > 0}}">
+        <view class="comment-item" tt:for="{{comments}}" tt:key="id">
+          <image 
+            class="avatar" 
+            src="{{item.user.avatar}}" 
+            bindtap="navigateToUserProfile"
+            data-user-id="{{item.user.id}}"
+          />
+          <view class="comment-content">
+            <view class="comment-header">
+              <text class="username" bindtap="navigateToUserProfile" data-user-id="{{item.user.id}}">
+                {{item.user.nickname}}
+              </text>
+              <text class="time">{{item.createTime}}</text>
+            </view>
+            <text class="comment-text">{{item.content}}</text>
+            
+            <!-- 评论互动区 -->
+            <view class="comment-actions">
+              <view class="like-action {{item.isLiked ? 'liked' : ''}}" 
+                    data-comment-id="{{item.id}}" 
+                    data-index="{{index}}"
+                    bind:tap="likeComment">
+                <image class="action-icon" src="{{item.isLiked ? '/assets/icons/liked.png' : '/assets/icons/like.png'}}" />
+                <text>{{item.likeCount || 0}}</text>
+              </view>
+              <view class="reply-action" 
+                    data-user-id="{{item.user.id}}" 
+                    data-nickname="{{item.user.nickname}}"
+                    bind:tap="setReplyTarget">
+                <image class="action-icon" src="/assets/icons/reply.png" />
+                <text>回复</text>
+              </view>
+            </view>
+
+            <!-- 评论回复区 -->
+            <view class="replies-section" tt:if="{{item.replies && item.replies.length > 0}}">
+              <view class="reply-item" tt:for="{{item.replies}}" tt:for-item="reply" tt:key="id">
+                <view class="reply-content">
+                  <text class="reply-user" 
+                        bindtap="navigateToUserProfile" 
+                        data-user-id="{{reply.user.id}}">{{reply.user.nickname}}</text>
+                  <text tt:if="{{reply.replyTo}}" class="reply-to">回复</text>
+                  <text tt:if="{{reply.replyTo}}" 
+                        class="reply-user"
+                        bindtap="navigateToUserProfile" 
+                        data-user-id="{{reply.replyTo.id}}">{{reply.replyTo.nickname}}</text>
+                  <text>: {{reply.content}}</text>
+                </view>
+                <text class="reply-time">{{reply.createTime}}</text>
+              </view>
+              
+              <view tt:if="{{item.hasMoreReplies}}" 
+                    class="load-more-replies {{item.isLoadingReplies ? 'loading' : ''}}"
+                    data-comment-id="{{item.id}}"
+                    data-index="{{index}}"
+                    bind:tap="loadCommentReplies">
+                <text>{{item.isLoadingReplies ? '加载中...' : '查看更多回复'}}</text>
+              </view>
+            </view>
+          </view>
+        </view>
+
+        <!-- 加载更多评论 -->
+        <view tt:if="{{hasMoreComments}}" 
+              class="load-more {{isLoadingComments ? 'loading' : ''}}"
+              bind:tap="loadMoreComments">
+          <text>{{isLoadingComments ? '加载中...' : '加载更多评论'}}</text>
+        </view>
+      </block>
+
+      <!-- 暂无评论 -->
+      <view tt:else class="no-comments">
+        <image class="empty-icon" src="/assets/icons/empty-comment.png" />
+        <text>暂无评论，快来抢沙发吧~</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部评论栏 -->
+  <view class="comment-bar">
+    <view class="comment-input-wrap">
+      <input 
+        class="comment-input"
+        placeholder="{{replyTo ? '回复 ' + replyTo.nickname : '说点什么...'}}"
+        value="{{commentText}}"
+        cursor-spacing="20"
+        bindinput="onCommentInput"
+        bindconfirm="submitComment"
+        focus="{{!!replyTo}}"
+        adjust-position="{{true}}"
+        hold-keyboard="{{true}}"
+      />
+      <view tt:if="{{replyTo}}" class="cancel-reply" bindtap="cancelReply">取消</view>
+    </view>
+    <view class="action-btns">
+      <view 
+        class="like-btn {{isLiked ? 'liked' : ''}}"
+        bindtap="toggleLike"
+      >
+        <image src="/assets/icons/{{isLiked ? 'like-filled' : 'like'}}.png" />
+        <text>{{post.likeCount || 0}}</text>
+      </view>
+      <view 
+        class="collect-btn {{isCollected ? 'collected' : ''}}"
+        bindtap="toggleCollect"
+      >
+        <image src="/assets/icons/{{isCollected ? 'collect-filled' : 'collect'}}.png" />
+        <text>{{post.collectCount || 0}}</text>
+      </view>
+    </view>
+  </view>
+</view> 

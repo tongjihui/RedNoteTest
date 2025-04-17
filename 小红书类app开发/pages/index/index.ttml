@@ -1,0 +1,104 @@
+<view style="width: 100vw;height: 66rpx; background-color: #FFFFFF;">
+    <picker-city />
+</view>
+<banner productList="{{shopList}}" />
+<!-- <view class="mr-20"></view> -->
+<tab-bar options="{{sortList}}" current="{{current}}" bind:change="switchTap" />
+<view class="mr-20"></view>
+<swiper current="{{current}}"  style="height:{{swiperHeight}}px;" bindchange="switchTap">
+        <swiper-item>
+            <view>
+                <product-card-big id="card"  productList="{{distanceSortList}}" />
+            </view>
+        </swiper-item>
+        <swiper-item>
+            <view>
+                <product-card-big id="card"  productList="{{rateSortList}}" />
+            </view>
+        </swiper-item>
+        <swiper-item>
+            <view>
+                <product-card-big id="card"  productList="{{saleSortList}}" />
+            </view>
+        </swiper-item>
+</swiper>
+
+<view class="container">
+  <!-- 顶部导航栏 -->
+  <view class="nav-bar">
+    <view class="nav-item {{currentTab === 'recommend' ? 'active' : ''}}" bindtap="switchTab" data-tab="recommend">推荐</view>
+    <view class="nav-item {{currentTab === 'follow' ? 'active' : ''}}" bindtap="switchTab" data-tab="follow">关注</view>
+  </view>
+
+  <!-- 搜索栏 -->
+  <view class="search-bar" bindtap="goToSearch">
+    <image class="search-icon" src="../../assets/icons/search.png" />
+    <text class="search-placeholder">搜索笔记/用户</text>
+  </view>
+
+  <!-- 内容区域 -->
+  <scroll-view 
+    class="content-container" 
+    scroll-y 
+    enable-flex
+    refresher-enabled="{{true}}"
+    refresher-triggered="{{isRefreshing}}"
+    bindrefresherrefresh="onRefresh"
+    bindscrolltolower="onLoadMore"
+  >
+    <view class="post-list">
+      <view class="post-item" tt:for="{{posts}}" tt:key="id" bindtap="goToDetail" data-id="{{item.id}}">
+        <!-- 封面图/视频 -->
+        <view class="post-cover">
+          <image 
+            class="cover-image" 
+            mode="aspectFill" 
+            src="{{item.cover}}" 
+            tt:if="{{item.type === 'image'}}"
+          />
+          <video 
+            class="cover-video" 
+            src="{{item.video}}" 
+            tt:if="{{item.type === 'video'}}"
+            show-play-btn="{{false}}"
+            show-center-play-btn="{{false}}"
+            controls="{{false}}"
+            loop
+            muted
+          />
+          <view class="post-type-icon" tt:if="{{item.type === 'video'}}">
+            <image src="../../assets/icons/video.png" />
+          </view>
+        </view>
+        
+        <!-- 笔记内容 -->
+        <view class="post-content">
+          <text class="post-title">{{item.title}}</text>
+          <view class="post-info">
+            <view class="user-info">
+              <image class="avatar" src="{{item.user.avatar}}" />
+              <text class="nickname">{{item.user.nickname}}</text>
+            </view>
+            <view class="interaction-info">
+              <view class="like-info">
+                <image src="../../assets/icons/like.png" />
+                <text>{{item.likeCount}}</text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 加载更多 -->
+    <view class="loading" tt:if="{{isLoading}}">
+      <view class="loading-spinner"></view>
+      <text>加载中...</text>
+    </view>
+
+    <!-- 没有更多数据 -->
+    <view class="no-more" tt:if="{{noMore}}">
+      <text>没有更多内容了</text>
+    </view>
+  </scroll-view>
+</view>

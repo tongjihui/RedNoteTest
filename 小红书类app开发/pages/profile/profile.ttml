@@ -1,0 +1,132 @@
+<view class="container">
+  <!-- 用户信息区域 -->
+  <view class="user-info">
+    <view class="user-header">
+      <image class="bg-image" src="{{userInfo.backgroundImage || '../../assets/images/default-bg.png'}}" mode="aspectFill" />
+      <view class="header-content">
+        <view class="avatar-container">
+          <image class="avatar" src="{{userInfo.avatar || '../../assets/images/default-avatar.png'}}" mode="aspectFill" />
+          <view class="edit-avatar" bindtap="changeAvatar" tt:if="{{isCurrentUser}}">
+            <image src="../../assets/icons/camera.png" />
+          </view>
+        </view>
+        <view class="user-name">{{userInfo.nickname}}</view>
+        <view class="user-id">小红书号：{{userInfo.redId}}</view>
+        <view class="user-bio">{{userInfo.bio || '点击这里添加简介...'}}</view>
+      </view>
+    </view>
+
+    <view class="user-stats">
+      <view class="stat-item" bindtap="goToFollowing">
+        <text class="stat-num">{{userInfo.followingCount || 0}}</text>
+        <text class="stat-label">关注</text>
+      </view>
+      <view class="stat-item" bindtap="goToFans">
+        <text class="stat-num">{{userInfo.followerCount || 0}}</text>
+        <text class="stat-label">粉丝</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-num">{{userInfo.likeCount || 0}}</text>
+        <text class="stat-label">获赞</text>
+      </view>
+    </view>
+
+    <view class="user-actions">
+      <block tt:if="{{isCurrentUser}}">
+        <view class="action-btn edit" bindtap="editProfile">编辑资料</view>
+        <view class="action-btn settings" bindtap="goToSettings">
+          <image src="../../assets/icons/settings.png" />
+        </view>
+      </block>
+      <block tt:else>
+        <view class="action-btn {{isFollowing ? 'following' : 'follow'}}" bindtap="toggleFollow">
+          {{isFollowing ? '已关注' : '关注'}}
+        </view>
+        <view class="action-btn message" bindtap="sendMessage">发消息</view>
+      </block>
+    </view>
+  </view>
+
+  <!-- 内容标签页 -->
+  <view class="content-tabs">
+    <view class="tab-header">
+      <view 
+        class="tab-item {{currentTab === 'posts' ? 'active' : ''}}" 
+        bindtap="switchTab" 
+        data-tab="posts"
+      >笔记</view>
+      <view 
+        class="tab-item {{currentTab === 'collections' ? 'active' : ''}}" 
+        bindtap="switchTab" 
+        data-tab="collections"
+      >收藏</view>
+      <view 
+        class="tab-item {{currentTab === 'likes' ? 'active' : ''}}" 
+        bindtap="switchTab" 
+        data-tab="likes"
+      >赞过</view>
+    </view>
+
+    <!-- 笔记列表 -->
+    <scroll-view 
+      class="content-list" 
+      scroll-y 
+      refresher-enabled="{{true}}"
+      refresher-triggered="{{isRefreshing}}"
+      bindrefresherrefresh="onRefresh"
+      bindscrolltolower="onLoadMore"
+    >
+      <view class="post-grid">
+        <view 
+          class="post-item" 
+          tt:for="{{currentList}}" 
+          tt:key="id"
+          bindtap="goToDetail" 
+          data-id="{{item.id}}"
+        >
+          <image 
+            class="post-cover" 
+            src="{{item.cover}}" 
+            mode="aspectFill" 
+          />
+          <view class="post-info">
+            <text class="post-title">{{item.title}}</text>
+            <view class="post-stats">
+              <view class="stat">
+                <image src="../../assets/icons/like.png" />
+                <text>{{item.likeCount}}</text>
+              </view>
+              <view class="stat">
+                <image src="../../assets/icons/comment.png" />
+                <text>{{item.commentCount}}</text>
+              </view>
+            </view>
+          </view>
+          <view class="post-type-icon" tt:if="{{item.type === 'video'}}">
+            <image src="../../assets/icons/video.png" />
+          </view>
+        </view>
+      </view>
+
+      <!-- 加载更多 -->
+      <view class="loading" tt:if="{{isLoading}}">
+        <view class="loading-spinner"></view>
+        <text>加载中...</text>
+      </view>
+
+      <!-- 没有更多数据 -->
+      <view class="no-more" tt:if="{{noMore}}">
+        <text>没有更多内容了</text>
+      </view>
+
+      <!-- 空状态 -->
+      <view class="empty" tt:if="{{currentList.length === 0}}">
+        <image class="empty-icon" src="../../assets/icons/empty-{{currentTab}}.png" />
+        <text>{{emptyTips[currentTab]}}</text>
+        <view class="action-btn" tt:if="{{currentTab === 'posts' && isCurrentUser}}" bindtap="goToPublish">
+          去发布笔记
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+</view> 

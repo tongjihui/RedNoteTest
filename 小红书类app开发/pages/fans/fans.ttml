@@ -1,0 +1,39 @@
+<view class="container">
+  <!-- 粉丝列表 -->
+  <view class="fans-list">
+    <block tt:if="{{fans.length > 0}}">
+      <view class="fan-item" tt:for="{{fans}}" tt:key="id">
+        <view class="fan-info" bindtap="navigateToUserProfile" data-user-id="{{item.id}}">
+          <image class="avatar" src="{{item.avatar}}" mode="aspectFill" />
+          <view class="user-info">
+            <text class="nickname">{{item.nickname}}</text>
+            <view class="stats">
+              <text class="stat-item">{{item.followerCount}} 粉丝</text>
+              <text class="stat-item">{{item.followingCount}} 关注</text>
+            </view>
+            <text class="bio" tt:if="{{item.bio}}">{{item.bio}}</text>
+          </view>
+        </view>
+        <view 
+          class="follow-btn {{item.isFollowing ? 'following' : ''}}" 
+          bindtap="toggleFollow"
+          data-user-id="{{item.id}}"
+          data-index="{{index}}"
+        >
+          {{item.isFollowing ? '已关注' : '关注'}}
+        </view>
+      </view>
+
+      <!-- 加载更多 -->
+      <view tt:if="{{hasMore}}" class="loading-more {{isLoading ? 'loading' : ''}}">
+        <text>{{isLoading ? '加载中...' : '上拉加载更多'}}</text>
+      </view>
+    </block>
+
+    <!-- 空状态 -->
+    <view tt:else class="empty-state">
+      <image class="empty-icon" src="/assets/icons/empty-fans.png" mode="aspectFit" />
+      <text>暂无粉丝</text>
+    </view>
+  </view>
+</view> 

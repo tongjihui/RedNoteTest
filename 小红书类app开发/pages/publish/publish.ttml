@@ -1,0 +1,116 @@
+<view class="container">
+  <!-- 顶部操作栏 -->
+  <view class="header">
+    <text class="cancel" bindtap="cancel">取消</text>
+    <text class="publish {{canPublish ? '' : 'disabled'}}" bindtap="publish">发布</text>
+  </view>
+
+  <!-- 内容编辑区 -->
+  <view class="content">
+    <!-- 标题输入 -->
+    <input 
+      class="title-input" 
+      placeholder="填写标题会有更多赞哦~" 
+      maxlength="{{maxTitleLength}}"
+      value="{{title}}"
+      bindinput="onTitleInput"
+    />
+
+    <!-- 正文输入 -->
+    <textarea 
+      class="content-input" 
+      placeholder="分享你的想法..." 
+      maxlength="{{maxContentLength}}"
+      value="{{content}}"
+      bindinput="onContentInput"
+      auto-height
+    />
+
+    <!-- 图片/视频上传区 -->
+    <view class="media-area">
+      <view class="media-list">
+        <view 
+          class="media-item" 
+          tt:for="{{mediaList}}" 
+          tt:key="index"
+        >
+          <image 
+            tt:if="{{item.type === 'image'}}"
+            class="media-preview" 
+            src="{{item.path}}" 
+            mode="aspectFill"
+            bindtap="previewMedia"
+            data-index="{{index}}"
+          />
+          <video 
+            tt:if="{{item.type === 'video'}}"
+            class="media-preview"
+            src="{{item.path}}"
+            bindtap="previewMedia"
+            data-index="{{index}}"
+          />
+          <view 
+            class="media-delete" 
+            bindtap="deleteMedia" 
+            data-index="{{index}}"
+          >×</view>
+        </view>
+        <view 
+          class="media-upload" 
+          bindtap="chooseMedia" 
+          tt:if="{{mediaList.length < maxMediaCount}}"
+        >
+          <image class="upload-icon" src="../../assets/icons/upload.png" />
+          <text class="upload-text">添加图片/视频</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 话题和位置 -->
+    <view class="tools">
+      <!-- 话题选择 -->
+      <view class="tool-item" bindtap="chooseTopic">
+        <image class="tool-icon" src="../../assets/icons/topic.png" />
+        <text class="tool-text">添加话题</text>
+      </view>
+      <!-- 位置选择 -->
+      <view class="tool-item" bindtap="chooseLocation">
+        <image class="tool-icon" src="../../assets/icons/location.png" />
+        <text class="tool-text">添加位置</text>
+      </view>
+    </view>
+
+    <!-- 已选话题展示 -->
+    <view class="topic-list" tt:if="{{topics.length > 0}}">
+      <view 
+        class="topic-item" 
+        tt:for="{{topics}}" 
+        tt:key="id"
+      >
+        <text class="topic-name">#{{item.name}}</text>
+        <text 
+          class="topic-delete" 
+          bindtap="deleteTopic" 
+          data-index="{{index}}"
+        >×</text>
+      </view>
+    </view>
+
+    <!-- 已选位置展示 -->
+    <view class="location" tt:if="{{location}}">
+      <image class="location-icon" src="../../assets/icons/location.png" />
+      <text class="location-name">{{location.name}}</text>
+      <text 
+        class="location-delete" 
+        bindtap="deleteLocation"
+      >×</text>
+    </view>
+  </view>
+
+  <!-- 底部工具栏 -->
+  <view class="toolbar">
+    <view class="word-count">
+      <text>{{content.length}}</text>/{{maxContentLength}}
+    </view>
+  </view>
+</view> 
